@@ -1,0 +1,6 @@
+# first compiling method
+$ elixir modules-and-functions-1.exs
+
+# second compiling method
+$ eix
+iex(1)> c "modules-and-functions-1.exs"

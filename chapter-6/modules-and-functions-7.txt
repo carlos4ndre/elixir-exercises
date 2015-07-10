@@ -1,0 +1,13 @@
+ex(1)> Float.to_char_list 7.1, [decimals: 2, compact: false]
+'7.10'
+iex(2)> System.get_env("USER")
+"w1zard"
+iex(3)> String.slice("dave/test.exs", -4..-1)
+".exs"
+iex(4)> System.cwd
+"/Users/w1zard/Projects/elixir-exercises/chapter-6"
+iex(6)> System.cmd("whoami", [])
+{"w1zard\n", 0}
+
+# library to convert JSON Strings into elixir data structures
+https://github.com/cblage/elixir-json
