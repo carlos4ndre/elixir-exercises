@@ -1,0 +1,32 @@
+$ elixir -r chain.exs -e "Chain.run(10)"
+{37385, "Result is 10"}
+
+$ elixir -r chain.exs -e "Chain.run(100)"
+{9733, "Result is 100"}
+
+$ elixir -r chain.exs -e "Chain.run(1000)"
+{21503, "Result is 1000"}
+
+$ elixir -r chain.exs -e "Chain.run(10000)"
+{143306, "Result is 10000"}
+
+$ elixir -r chain.exs -e "Chain.run(400_000)"
+
+23:25:58.104 [error] Too many processes
+
+
+** (SystemLimitError) a system limit has been reached
+    :erlang.spawn(Chain, :counter, [#PID<0.50.8>])
+    chain.exs:12: anonymous fn/2 in Chain.create_processes/1
+    (elixir) lib/enum.ex:1266: anonymous fn/3 in Enum.reduce/3
+    (elixir) lib/range.ex:77: Enumerable.Range.reduce/6
+    (elixir) lib/enum.ex:1265: Enum.reduce/3
+    chain.exs:10: Chain.create_processes/1
+    (stdlib) timer.erl:197: :timer.tc/3
+    chain.exs:26: Chain.run/1
+
+$ elixir --erl "+P 1000000" -r chain.exs -e "Chain.run(400_00)"
+{622566, "Result is 40000"}
+
+$ elixir --erl "+P 1000000" -r chain.exs -e "Chain.run(1_000_000)"
+{14301448, "Result is 1000000"}
