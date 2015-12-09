@@ -1,0 +1,43 @@
+#### Node 1
+$ iex --sname node_one
+Erlang/OTP 18 [erts-7.0.3] [source] [64-bit] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false] [dtrace]
+
+Interactive Elixir (1.0.5) - press Ctrl+C to exit (type h() ENTER for help)
+iex(node_one@D4rkP0rtal)1> Node.self
+:node_one@D4rkP0rtal
+iex(node_one@D4rkP0rtal)2> Node.list
+[]
+iex(node_one@D4rkP0rtal)3> fun = fn -> IO.puts(Enum.join(File.ls!, ",")) end
+#Function<20.54118792/0 in :erl_eval.expr/5>
+iex(node_one@D4rkP0rtal)4> Node.connect :"node_two@D4rkP0rtal"
+true
+iex(node_one@D4rkP0rtal)5> Node.list
+[:node_two@D4rkP0rtal]
+iex(node_one@D4rkP0rtal)6> Node.spawn(:"node_one@D4rkP0rtal", fun)
+cool-file-on-node1.txt
+#PID<0.78.0>
+iex(node_one@D4rkP0rtal)7> Node.spawn(:"node_two@D4rkP0rtal", fun)
+#PID<8961.74.0>
+cool-file-on-node2.txt
+iex(node_one@D4rkP0rtal)8>
+
+#### Node 2
+$ iex --sname node_two
+Erlang/OTP 18 [erts-7.0.3] [source] [64-bit] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false] [dtrace]
+
+Interactive Elixir (1.0.5) - press Ctrl+C to exit (type h() ENTER for help)
+iex(node_two@D4rkP0rtal)1> Node.self
+:node_two@D4rkP0rtal
+iex(node_two@D4rkP0rtal)2> Node.list
+[]
+iex(node_two@D4rkP0rtal)3> fun = fn -> IO.puts(Enum.join(File.ls!, ",")) end
+#Function<20.54118792/0 in :erl_eval.expr/5>
+iex(node_two@D4rkP0rtal)4> Node.list
+[:node_one@D4rkP0rtal]
+iex(node_two@D4rkP0rtal)5> Node.spawn(:"node_one@D4rkP0rtal", fun)
+cool-file-on-node1.txt
+#PID<8998.81.0>
+iex(node_two@D4rkP0rtal)6> Node.spawn(:"node_two@D4rkP0rtal", fun)
+#PID<0.76.0>
+cool-file-on-node2.txt
+iex(node_two@D4rkP0rtal)7>
