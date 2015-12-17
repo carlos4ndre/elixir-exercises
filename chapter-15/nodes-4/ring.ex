@@ -1,9 +1,10 @@
 defmodule Ring do
 
+  @interval 10000  # 10 seconds
   @name :ring
 
   def start do
-    pid = spawn(__MODULE__, :client_manager, [[]])
+      pid = spawn(__MODULE__, :request_handler, [[]])
     :global.register_name(@name, pid)
   end
 
@@ -25,21 +26,33 @@ defmodule Ring do
     end
   end
 
-  def client_manager(clients) do
+  def send_tick(pid) do
+    if pid do
+      send pid, { :tick }
+    end
+  end
+
+  def request_handler(clients) do
     receive do
       { :join, pid } ->
         IO.puts "client #{inspect pid} has joined the ring"
         new_clients = clients ++ [pid]
         IO.puts "update clients links"
         update_clients_links(new_clients)
-        client_manager(new_clients)
+        request_handler(new_clients)
+      { :tick } ->
+        first_client = List.first(clients)
+        send_tick(first_client)
+        request_handler(clients)
+      after @interval ->
+        # default action for this example
+        send self, { :tick }
+        request_handler(clients)
     end
   end
 end
 
 defmodule Client do
-
-  @interval 10000  # 10 seconds
 
   def join do
     pid = spawn(__MODULE__, :receiver, [[]])
@@ -47,9 +60,8 @@ defmodule Client do
   end
 
   def send_tick(next_client) do
-    case next_client do
-      nil -> IO.puts "End of the ring!"
-      pid -> send pid, { :tick }
+    if next_client do
+      send next_client, { :tick }
     end
   end
 
@@ -58,12 +70,9 @@ defmodule Client do
       { :updateLink, next_client } ->
         receiver(next_client)
       { :tick } ->
-        IO.puts "tick"
+        IO.puts "tick on node #{inspect self}"
         send_tick(next_client)
         receiver(next_client)
-    after @interval ->
-      send_tick(next_client)
-      receiver(next_client)
     end
   end
 end
