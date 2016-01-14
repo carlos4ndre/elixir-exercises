@@ -7,7 +7,7 @@ end
 defmodule Bitmap do
   defstruct value: 0
 
-  defimpl Enumerable do
+  defimpl Enumerable, for: Bitmap do
     import :math, only: [log: 1]
 
     def count(%Bitmap{value: value}) do
@@ -46,6 +46,9 @@ defmodule MyTest do
     IO.puts Enum.member? fifty, 6
     IO.inspect Enum.reverse fifty
     IO.inspect Enum.join fifty, ":"
+    IO.inspect Enum.map fifty, &("<<#{&1}>>")
+    IO.inspect Enum.filter fifty, &(&1 == 1)
+    IO.inspect Enum.each fifty, &(IO.puts &1)
   end
 end
 
