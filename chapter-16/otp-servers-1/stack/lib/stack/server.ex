@@ -1,12 +1,8 @@
 defmodule Stack.Server do
   use GenServer
-
-  def handle_call(:pop, _from, current_stack) do
-    first_element = List.first(current_stack)
-    new_list = List.delete_at(current_stack, 0)
-
-    { :reply, first_element, new_list }
-  end
+  def handle_call(:pop, _from, [head|tail]) do
+    {:reply, head, tail}
+	end 
 end
 
 """
